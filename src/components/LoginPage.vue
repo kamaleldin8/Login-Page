@@ -1,15 +1,17 @@
 <template>
   <div class="login-full-page flex justify-content-center align-items-center">
     <form method="POST" @submit.prevent="login">
-      <div class="card flex flex-column align-items-center justify-content-center md:flex-row">
+      <div
+        class="card flex flex-column align-items-center justify-content-center md:flex-row"
+      >
         <div
           class="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5"
         >
           <div>
-            <img  class="img-logo" src="../assets/imgs/logo.svg" />
+            <img class="img-logo" :src="'../src/assets/imgs/' + imageName" />
           </div>
           <div class="email-wrapper flex flex-column align-items-start gap-2">
-            <label class='font-medium'>Email</label>
+            <label class="font-medium">Email</label>
             <InputText
               id="username"
               type="email"
@@ -24,39 +26,43 @@
             v-if="register_login"
           >
             <label class="font-medium">Password</label>
-            <InputText id="password" type="password" class="w-full" 
-            placeholder="**********"
+            <InputText
+              id="password"
+              type="password"
+              class="w-full"
+              placeholder="**********"
             />
           </div>
-          <div class="flex justify-content-between w-full py-2" v-if="register_login">
+          <div
+            class="flex justify-content-between w-full py-2"
+            v-if="register_login"
+          >
             <div class="remember-me">
-              <checkbox v-model="checked" binary="true"/>
+              <checkbox v-model="checked" binary="true" />
               <label class="pl-2 font-normal">Remember me</label>
             </div>
 
             <div class="text-700">
-              <a href="
-              " 
-              style="text-decoration: none; color: black;"
+              <a
+                href="
+              "
+                style="text-decoration: none; color: black"
               >
-              Forget password ?
-            </a></div>
+                Forget password?
+              </a>
+            </div>
           </div>
           <Button
             type="submit"
             icon="pi pi-user"
-            class="w-21rem
-            border-round-xl
-            "
+            class="w-21rem border-round-xl"
             >{{ login_btn_text }}</Button
           >
           <div class="mr-auto text-xs">
-            Don’t have an account? <span>
-              <a href="">
-                request one here.
-              </a>
-            </span> 
-
+            Don’t have an account?
+            <span>
+              <a href=""> request one here! </a>
+            </span>
           </div>
         </div>
       </div>
@@ -65,10 +71,12 @@
 </template>
 <script setup>
 import { ref } from "vue";
-const checked=ref(false);
-let register_login = ref(false);
-let login_btn_text = ref("Sign In");
-let email = ref(null);
+const checked = ref(false);
+const register_login = ref(false);
+const login_btn_text = ref("Proceed to login");
+const email = ref(null);
+const imageName = ref("logo.svg");
+const theme = ref("#594fc4");
 const data = [
   {
     id: 0,
@@ -101,6 +109,7 @@ const data = [
     provider: "uams",
     password: "James",
     AD: true,
+    color: "black",
   },
   {
     id: 4,
@@ -108,21 +117,20 @@ const data = [
     email: "bames@gmail.com",
     provider: "carti",
     password: "4564",
-    AD: false,
+    AD: true,
+    color: "#52B1D9",
   },
 ];
 
 function login() {
   // send email to API end point via get request and recieve account provider
-  const account = data.filter((item) => item.email == email.value);
-  console.log(account);
+  const account = data.find((item) => item.email === email.value);
+  register_login.value = true;
+  login_btn_text.value = "Sign In";
 
   if (account.AD) {
-    register_login = false;
-    login_btn_text.value = "Sign In";
-  } else {
-    register_login = true;
-    login_btn_text.value = "Proceed to login";
+    imageName.value = `${account.provider}.png`;
+    theme.value = account.color;
   }
 }
 </script>
@@ -137,21 +145,28 @@ function login() {
   width: 30rem;
   height: 30rem;
   background: #ffffff;
-  border: 1px solid #594FC4;
+  border: 1px solid;
+  border-color: v-bind(theme);
   border-radius: 5%;
 }
-.img-logo{
+.img-logo {
   width: 7em;
 }
-.w-full{
+.w-full {
   width: 21em !important;
 }
-.w-full::placeholder{
-  color:#CED4DA;
-  padding-left: .5em;
+.w-full::placeholder {
+  color: #ced4da;
+  padding-left: 0.5em;
 }
-button{
-  background-color: #594FC4;
+button {
+  background-color: v-bind(theme);
+  box-shadow: 0px 5.4px 10.8px rgba(0, 0, 0, 0.16);
+}
+button:hover {
+  background-color: white !important;
+  color: v-bind(theme) !important;
+  border-color: v-bind(theme) !important;
   box-shadow: 0px 5.4px 10.8px rgba(0, 0, 0, 0.16);
 }
 </style>
