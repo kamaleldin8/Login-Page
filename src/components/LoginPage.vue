@@ -1,43 +1,63 @@
 <template>
   <div class="login-full-page flex justify-content-center align-items-center">
     <form method="POST" @submit.prevent="login">
-      <div class="login-card card flex flex-column md:flex-row">
+      <div class="card flex flex-column align-items-center justify-content-center md:flex-row">
         <div
           class="w-full md:w-5 flex flex-column align-items-center justify-content-center gap-3 py-5"
         >
           <div>
-            <img src="../assets/imgs/logo.svg" />
+            <img  class="img-logo" src="../assets/imgs/logo.svg" />
           </div>
-          <div class="flex flex-column align-items-start gap-2">
-            <label>Email</label>
+          <div class="email-wrapper flex flex-column align-items-start gap-2">
+            <label class='font-medium'>Email</label>
             <InputText
               id="username"
               type="email"
               class="w-full"
               v-model.trim="email"
+              placeholder="example@domain.com"
               required
             ></InputText>
           </div>
           <div
-            v-if="reg_login"
-            class="flex flex-column align-items-start gap-2"
+            class="password-wrapper flex flex-column align-items-start gap-2"
+            v-if="register_login"
           >
-            <label>Password</label>
-            <InputText id="password" type="password" class="w-full" />
+            <label class="font-medium">Password</label>
+            <InputText id="password" type="password" class="w-full" 
+            placeholder="**********"
+            />
           </div>
-          <div v-if="reg_login">
+          <div class="flex justify-content-between w-full py-2" v-if="register_login">
             <div class="remember-me">
-              <checkbox />
-              <label>Remember me</label>
+              <checkbox v-model="checked" binary="true"/>
+              <label class="pl-2 font-normal">Remember me</label>
             </div>
-            <div class="bg-gray-300">Forget password ?</div>
+
+            <div class="text-700">
+              <a href="
+              " 
+              style="text-decoration: none; color: black;"
+              >
+              Forget password ?
+            </a></div>
           </div>
           <Button
             type="submit"
             icon="pi pi-user"
-            class="w-10rem bg-indigo-500"
+            class="w-21rem
+            border-round-xl
+            "
             >{{ login_btn_text }}</Button
           >
+          <div class="mr-auto text-xs">
+            Don’t have an account? <span>
+              <a href="">
+                request one here.
+              </a>
+            </span> 
+
+          </div>
         </div>
       </div>
     </form>
@@ -45,8 +65,9 @@
 </template>
 <script setup>
 import { ref } from "vue";
-let reg_login = ref(false);
-let login_btn_text = ref("Proceed to login");
+const checked=ref(false);
+let register_login = ref(false);
+let login_btn_text = ref("Sign In");
 let email = ref(null);
 const data = [
   {
@@ -93,12 +114,15 @@ const data = [
 
 function login() {
   // send email to API end point via get request and recieve account provider
-  const account = data.find((e) => e.email == email);
+  const account = data.filter((item) => item.email == email.value);
   console.log(account);
+
   if (account.AD) {
+    register_login = false;
+    login_btn_text.value = "Sign In";
   } else {
-    reg_login = true;
-    login_btn_text = "Login";
+    register_login = true;
+    login_btn_text.value = "Proceed to login";
   }
 }
 </script>
@@ -109,10 +133,25 @@ function login() {
   height: 100vh;
   background: #f5f5f5;
 }
-.login-card {
-  width: 400px;
-  height: 400px;
+.card {
+  width: 30rem;
+  height: 30rem;
   background: #ffffff;
-  border-radius: 2%;
+  border: 1px solid #594FC4;
+  border-radius: 5%;
+}
+.img-logo{
+  width: 7em;
+}
+.w-full{
+  width: 21em !important;
+}
+.w-full::placeholder{
+  color:#CED4DA;
+  padding-left: .5em;
+}
+button{
+  background-color: #594FC4;
+  box-shadow: 0px 5.4px 10.8px rgba(0, 0, 0, 0.16);
 }
 </style>
